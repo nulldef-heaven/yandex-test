@@ -1,7 +1,5 @@
 class Validator {
-  static isValid(value) {
-    throw new Error("Not implemented")
-  }
+  static isValid(value) { throw new Error("Not implemented") }
 }
 
 class FioValidator extends Validator {
@@ -20,12 +18,6 @@ class PhoneSumValidator extends Validator {
   static isValid(value) { return value.replace(/\D+/g, '').split('').reduce((sum, val) => sum + Number(val), 0) <= 30 }
 }
 
-const RESPONSES = [
-  {"status": "success"},
-  {"status": "error", "reason": "Something was wrong"},
-  {"status": "progress", "timeout": 1000}
-]
-
 class MyForm {
   get VALIDATORS() {
     return {
@@ -39,10 +31,12 @@ class MyForm {
     this.form = form
     this.inputs = Array.from(this.form.getElementsByTagName("input"))
     this.resultContainer = resultContainer
+    this.button = form.getElementsByTagName('button')[0]
     this.form.addEventListener('submit', (e) => {
       e.preventDefault()
 
-      this.validate().isValid && this.submit()
+      // this.validate().isValid &&
+      this.submit()
 
       return false
     })
@@ -77,6 +71,7 @@ class MyForm {
   }
 
   submit() {
+    this.button.disabled = true
     fetch(this.form.action)
       .then(response => response.json())
       .then(json => {
@@ -93,6 +88,7 @@ class MyForm {
           case 'error':
             this.resultContainer.classList.add('error')
             this.resultContainer.innerHTML = json.reason
+            this.button.disabled = false
             break;
         }
       })
